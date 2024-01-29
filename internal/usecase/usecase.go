@@ -10,5 +10,5 @@ type Currency struct {
 }
 
 type CurrencyGetter interface {
-	GetCur(date time.Time, curName string) (*Currency, error)
+	GetCurrency(date time.Time, curName string) (*Currency, error)
 }

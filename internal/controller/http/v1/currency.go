@@ -2,6 +2,7 @@ package v1
 
 import (
 	"currency-rate/internal/usecase"
+	"currency-rate/internal/usecase/webapi"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -14,9 +15,13 @@ func GetCur(c *gin.Context) {
 		dateNew = time.Now()
 	}
 
+	api := webapi.NewWeb("https://www.cbr-xml-daily.ru")
+
+	s := usecase.NewGetCurrency(api)
 	val := c.Query("val")
 
-	a, err := usecase.GetCur(dateNew, val)
+	a, err := s.GetCurrency(dateNew, val)
+
 	if err != nil {
 		newErrorResponse(c, http.StatusNotFound, err.Error())
 	}

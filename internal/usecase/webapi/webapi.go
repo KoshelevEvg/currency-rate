@@ -6,12 +6,22 @@ import (
 	"net/http"
 )
 
-func Get(b string, date string) (*AllCur, error) {
+type WebServer struct {
+	Addr string
+}
+
+func NewWeb(addr string) *WebServer {
+	return &WebServer{
+		Addr: addr,
+	}
+}
+
+func (this *WebServer) Get(b string, date string) (*AllCur, error) {
 	var str string
 	if b == "Today" {
-		str = fmt.Sprint("https://www.cbr-xml-daily.ru/daily_json.js")
+		str = fmt.Sprintf("%s/daily_json.js", this.Addr)
 	} else {
-		str = fmt.Sprintf("https://www.cbr-xml-daily.ru/archive/%s/daily_json.js", date)
+		str = fmt.Sprintf("%s/archive/%s/daily_json.js", this.Addr, date)
 	}
 	a, err := http.Get(str)
 	if err != nil {

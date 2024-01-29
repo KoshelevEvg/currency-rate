@@ -2,6 +2,7 @@ package app
 
 import (
 	"context"
+	"currency-rate/config"
 	"currency-rate/internal/controller/http/v1"
 	"log"
 	"net/http"
@@ -12,10 +13,10 @@ type Server struct {
 	httpServer *http.Server
 }
 
-func Run(ctx context.Context) {
+func Run(ctx context.Context, cfg *config.Config) {
 
 	srv := &http.Server{
-		Addr:           ":" + "8080",
+		Addr:           ":" + cfg.Port,
 		Handler:        v1.NewRouter(),
 		MaxHeaderBytes: 1 << 20,
 		ReadTimeout:    10 * time.Second,

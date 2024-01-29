@@ -6,7 +6,17 @@ import (
 	"time"
 )
 
-func GetCur(date time.Time, nameCur string) (*Currency, error) {
+type GetC struct {
+	w *webapi.WebServer
+}
+
+func NewGetCurrency(w *webapi.WebServer) *GetC {
+	return &GetC{
+		w: w,
+	}
+}
+
+func (this *GetC) GetCurrency(date time.Time, nameCur string) (*Currency, error) {
 	var valStr string
 	year, month, day := date.Date()
 	yearToDay, monthToDay, dayToDay := time.Now().Date()
@@ -18,7 +28,8 @@ func GetCur(date time.Time, nameCur string) (*Currency, error) {
 	} else {
 		valStr = "Not today"
 	}
-	a, err := webapi.Get(valStr, fmtString)
+
+	a, err := this.w.Get(valStr, fmtString)
 
 	if err != nil {
 		return nil, err
