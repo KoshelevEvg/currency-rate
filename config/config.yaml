@@ -1,4 +1,10 @@
 address:
   "https://www.cbr-xml-daily.ru"
-port:
-  ":8080"
+serverAddress:
+  "localhost:8080"
+database:
+  host: "localhost"
+  port:  "5432"
+  username: "root"
+  password: "root"
+  db_name: "postgres"

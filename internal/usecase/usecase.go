@@ -1,10 +1,11 @@
 package usecase
 
 import (
+	"currency-rate/internal/usecase/webapi"
 	"time"
 )
 
-type Currency struct {
+type CurrencyDTO struct {
 	StartDate time.Time `json:"startDate"`
 	EndDate   time.Time `json:"endDate"`
 	Name      string    `json:"name"`
@@ -13,5 +14,14 @@ type Currency struct {
 }
 
 type CurrencyUseCase interface {
-	GetCurrency(date time.Time, curName string) (*Currency, error)
+	GetCurrency(date time.Time, curName string) (*CurrencyDTO, error)
+}
+
+type CurrencyGateway interface {
+	GetQuotes(date string) (*webapi.AllCur, error)
+}
+
+type CurrencyWorkerWithDB interface {
+	GetCurrencyDate(date string, charName string) (*CurrencyDTO, error)
+	InsertCurrencyDate(value []CurrencyDTO) error
 }

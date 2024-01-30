@@ -1,53 +1,69 @@
 package usecase
 
 import (
-	"currency-rate/internal/usecase/webapi"
 	"strings"
 	"time"
 )
 
-type GetC struct {
-	w webapi.CurrencyGateway
+type GetCurrencyWithDate struct {
+	w CurrencyGateway
+	r CurrencyWorkerWithDB
 }
 
-func NewGetCurrency(w webapi.CurrencyGateway) *GetC {
-	return &GetC{
+func NewGetCurrency(w CurrencyGateway, r CurrencyWorkerWithDB) *GetCurrencyWithDate {
+	return &GetCurrencyWithDate{
 		w: w,
+		r: r,
 	}
 }
 
-func (this *GetC) GetCurrency(date time.Time, nameCur string) (*Currency, error) {
-	var valStr string
-	year, month, day := date.Date()
-	yearToDay, monthToDay, dayToDay := time.Now().Date()
-
-	fmtString := replace(date.String())
-
-	if year == yearToDay && month == monthToDay && day == dayToDay {
-		valStr = "Today"
-	} else {
-		valStr = "Not today"
-	}
-
-	currency, err := this.w.Get(valStr, fmtString)
+func (this *GetCurrencyWithDate) GetCurrency(date time.Time, nameCur string) (*CurrencyDTO, error) {
+	fmtString := replacingDash(date.String())
+	currency, err := this.r.GetCurrencyDate(fmtString, nameCur)
 	if err != nil {
-		return nil, err
-	}
+		currencyList := make([]CurrencyDTO, 0)
+		response, err := this.w.GetQuotes(fmtString)
+		if _, ok := response.Valute[nameCur]; !ok {
+			return nil, err //TODO добавить описание ошибки
+		}
+		if err != nil {
+			return nil, err
+		}
+		for _, v := range response.Valute {
+			cur := CurrencyDTO{
+				StartDate: response.Date,
+				EndDate:   response.PreviousDate,
+				Name:      v.Name,
+				CharCode:  v.CharCode,
+				Value:     v.Value,
+			}
+			currencyList = append(currencyList, cur)
+		}
 
-	if _, ok := currency.Valute[nameCur]; !ok {
-		return nil, err //TODO добавить описание ошибки
-	}
+		err = this.r.InsertCurrencyDate(currencyList)
+		if err != nil {
+			return nil, err
+		}
+		return &CurrencyDTO{
+			StartDate: response.Date,
+			EndDate:   response.PreviousDate,
+			Name:      response.Valute[nameCur].Name,
+			CharCode:  response.Valute[nameCur].CharCode,
+			Value:     response.Valute[nameCur].Value,
+		}, nil
 
-	return &Currency{
-		StartDate: currency.Date,
-		EndDate:   currency.PreviousDate,
-		Name:      currency.Valute[nameCur].Name,
-		CharCode:  currency.Valute[nameCur].CharCode,
-		Value:     currency.Valute[nameCur].Value,
-	}, nil
+	} else {
+		return &CurrencyDTO{
+			StartDate: currency.StartDate,
+			EndDate:   currency.EndDate,
+			Name:      currency.Name,
+			CharCode:  currency.CharCode,
+			Value:     currency.Value,
+		}, nil
+	}
 }
 
-func replace(b string) string {
+func replacingDash(b string) string {
 	b = strings.Replace(b, "-", "/", 2)
 	fmtString := strings.Split(b, " ")
 	return fmtString[0]

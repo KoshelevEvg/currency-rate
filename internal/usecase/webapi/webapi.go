@@ -16,13 +16,9 @@ func NewWeb(addr string) *WebServer {
 	}
 }
 
-func (this *WebServer) Get(b string, date string) (*AllCur, error) {
+func (this *WebServer) GetQuotes(date string) (*AllCur, error) {
 	var str string
-	if b == "Today" {
-		str = fmt.Sprintf("%s/daily_json.js", this.Addr)
-	} else {
-		str = fmt.Sprintf("%s/archive/%s/daily_json.js", this.Addr, date)
-	}
+	str = fmt.Sprintf("%s/archive/%s/daily_json.js", this.Addr, date)
 	a, err := http.Get(str)
 	if err != nil {
 		return nil, err
