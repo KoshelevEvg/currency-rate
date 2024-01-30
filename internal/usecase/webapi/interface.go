@@ -1,5 +1,5 @@
 package webapi
 
-type GetList interface {
+type CurrencyGateway interface {
 	Get(b string, date string) (*AllCur, error)
 }

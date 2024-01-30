@@ -1,4 +1,4 @@
 address:
   "https://www.cbr-xml-daily.ru"
 port:
-  "8080"
+  ":8080"

@@ -7,10 +7,10 @@ import (
 )
 
 type GetC struct {
-	w *webapi.WebServer
+	w webapi.CurrencyGateway
 }
 
-func NewGetCurrency(w *webapi.WebServer) *GetC {
+func NewGetCurrency(w webapi.CurrencyGateway) *GetC {
 	return &GetC{
 		w: w,
 	}
@@ -29,19 +29,21 @@ func (this *GetC) GetCurrency(date time.Time, nameCur string) (*Currency, error)
 		valStr = "Not today"
 	}
 
-	a, err := this.w.Get(valStr, fmtString)
-
+	currency, err := this.w.Get(valStr, fmtString)
 	if err != nil {
 		return nil, err
 	}
 
-	if _, ok := a.Valute[nameCur]; !ok {
-		return nil, err
+	if _, ok := currency.Valute[nameCur]; !ok {
+		return nil, err //TODO добавить описание ошибки
 	}
 
 	return &Currency{
-		Name:  a.Valute[nameCur].Name,
-		Value: a.Valute[nameCur].Value,
+		StartDate: currency.Date,
+		EndDate:   currency.PreviousDate,
+		Name:      currency.Valute[nameCur].Name,
+		CharCode:  currency.Valute[nameCur].CharCode,
+		Value:     currency.Valute[nameCur].Value,
 	}, nil
 }
 

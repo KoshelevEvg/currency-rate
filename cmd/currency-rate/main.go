@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	maincfg "currency-rate/config"
 	"currency-rate/internal/app"
 	"github.com/go-micro/plugins/v4/config/encoder/yaml"
@@ -18,7 +17,7 @@ func main() {
 
 	l := logrus.New()
 	l.SetFormatter(&logrus.JSONFormatter{})
-
+	//TODO yaml парсел (Перевести на net/http)
 	cfg, err := config.NewConfig(config.WithReader(json.NewReader(reader.WithEncoder(yaml.NewEncoder()))))
 	if err != nil {
 		logrus.Fatal(err)
@@ -35,7 +34,7 @@ func main() {
 	}
 	content.Port = cfg.Get("port").String("8080")
 	content.Address = cfg.Get("address").String("localhost")
+	content.Address = cfg.Get("address").String("localhost")
 
-	ctx := context.TODO()
-	app.Run(ctx, content)
+	app.Run(content)
 }

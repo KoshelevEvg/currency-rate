@@ -2,30 +2,42 @@ package v1
 
 import (
 	"currency-rate/internal/usecase"
-	"currency-rate/internal/usecase/webapi"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
 )
 
-func GetCur(c *gin.Context) {
+type CurrencyController struct {
+	getter usecase.CurrencyUseCase
+}
 
-	dateNew, err := time.Parse("2006/01/02", c.Query("date"))
+func NewCurrencyController(getter usecase.CurrencyUseCase) *CurrencyController {
+	return &CurrencyController{getter: getter}
+}
+
+func (c CurrencyController) GetCur(ctx *gin.Context) {
+
+	dateNew, err := time.Parse("2006/01/02", ctx.Query("date"))
 	if err != nil {
 		dateNew = time.Now()
 	}
 
-	api := webapi.NewWeb("https://www.cbr-xml-daily.ru")
+	val := ctx.Query("val")
 
-	s := usecase.NewGetCurrency(api)
-	val := c.Query("val")
-
-	a, err := s.GetCurrency(dateNew, val)
-
+	currency, err := c.getter.GetCurrency(dateNew, val)
 	if err != nil {
-		newErrorResponse(c, http.StatusNotFound, err.Error())
+		newErrorResponse(ctx, http.StatusNotFound, err.Error())
+		return
 	}
 
-	c.JSON(http.StatusOK, a)
+	resp := &ResponseAnswer{
+		StartDate: currency.StartDate,
+		EndDate:   currency.EndDate,
+		Name:      currency.Name,
+		CharCode:  currency.CharCode,
+		Value:     currency.Value,
+	}
+
+	ctx.JSON(http.StatusOK, resp)
 
 }

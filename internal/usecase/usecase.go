@@ -5,10 +5,13 @@ import (
 )
 
 type Currency struct {
-	Name  string  `json:"name"`
-	Value float64 `json:"value"`
+	StartDate time.Time `json:"startDate"`
+	EndDate   time.Time `json:"endDate"`
+	Name      string    `json:"name"`
+	CharCode  string    `json:"char_code"`
+	Value     float64   `json:"value"`
 }
 
-type CurrencyGetter interface {
+type CurrencyUseCase interface {
 	GetCurrency(date time.Time, curName string) (*Currency, error)
 }

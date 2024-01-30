@@ -1,6 +1,7 @@
 package config
 
 type Config struct {
-	Address string `yaml:"address"`
-	Port    string `yaml:"port"`
+	ServerAddress string `yaml:"serverAddress"` //TODO struct
+	Address       string `yaml:"address"`       //TODO struct
+	Port          string `yaml:"port"`
 }
