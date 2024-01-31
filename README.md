@@ -1,2 +1,59 @@
-# currency-rate
-Getting the exchange rate for a given currency and date
+## REST API сервис для получения котировок валют
+### Введение:
+Данный сервис служит для получения котировок валют. 
+
+В данный момент у сервиса поддерживается функционал получения котировок валют по заданной дате. 
+А так же кеширования ее в базе данных.
+
+### Запуск приложения
+Для запуска приложения следует использовать следущий конфиг файл:
+
+```yaml
+address: "https://www.cbr-xml-daily.ru"
+serverAddress: ":8080"
+database:
+  host: "postgres-dev"
+  port:  "5432"
+  username: "postgres"
+  password: ""
+  db_name: "postgres"
+```
+Запустить приложение можно с помощью команды `Make`:
+```shell
+make build && make run
+```
+Необходимо наличие `docker-compose`
+
+### Точки входа:
+В приложении доступны следующие точки входа:
+ - `api/v1/currency?[{parametrs}]` Получить котировки по заданной валюте за опредленный период.
+
+`{parametrs}` - входные key-value параметры запроса котровок(query).
+
+Пример
+`api/v1/currency?date=2024/01/04&val=USD`
+
+### Примеры ответов
+
+- `Get api/v1/currency?date=2024/01/20&val=AUD`
+
+```json
+{
+    "start_date": "2024-01-20T11:30:00Z",
+    "end_date": "2024-01-19T11:30:00Z",
+    "name": "Австралийский доллар",
+    "char_code": "AUD",
+    "value": 58.2831
+}
+```
+
+### Тестирование
+Запустить юнит тесты можно с помощью `Makefile`:
+```shell
+make test
+```
+
+Получить отчет о покрытии кода тестами:
+```shell
+make cover
+```

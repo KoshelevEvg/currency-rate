@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+//go:generate go run go.uber.org/mock/mockgen -source=usecase.go -destination=mocks/mock_interface.go
+
 type CurrencyUseCase interface {
 	GetCurrency(date time.Time, curName string) (*CurrencyDTO, error)
 }

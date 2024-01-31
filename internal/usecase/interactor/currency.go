@@ -1,28 +1,29 @@
-package usecase
+package interactor
 
 import (
+	"currency-rate/internal/usecase"
 	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 )
 
 type GetCurrencyWithDate struct {
-	w CurrencyGateway
-	r CurrencyCache
+	w usecase.CurrencyGateway
+	r usecase.CurrencyCache
 }
 
-func NewGetCurrency(w CurrencyGateway, r CurrencyCache) *GetCurrencyWithDate {
+func NewGetCurrency(w usecase.CurrencyGateway, r usecase.CurrencyCache) *GetCurrencyWithDate {
 	return &GetCurrencyWithDate{
 		w: w,
 		r: r,
 	}
 }
 
-func (g GetCurrencyWithDate) GetCurrency(date time.Time, nameCur string) (*CurrencyDTO, error) {
+func (g GetCurrencyWithDate) GetCurrency(date time.Time, nameCur string) (*usecase.CurrencyDTO, error) {
 	fmtString := replacingDash(date.String())
 	currency, err := g.r.GetCurrencyDate(fmtString, nameCur)
 	if err != nil {
-		currencyList := make([]CurrencyDTO, 0)
+		currencyList := make([]usecase.CurrencyDTO, 0)
 		response, err := g.w.GetQuotes(fmtString)
 		if err != nil {
 			return nil, err
@@ -31,7 +32,7 @@ func (g GetCurrencyWithDate) GetCurrency(date time.Time, nameCur string) (*Curre
 			return nil, err //TODO Создать ошибку, что нет валюты
 		}
 		for _, v := range response.Valute {
-			cur := CurrencyDTO{
+			cur := usecase.CurrencyDTO{
 				StartDate: response.Date,
 				EndDate:   response.PreviousDate,
 				Name:      v.Name,
@@ -44,7 +45,7 @@ func (g GetCurrencyWithDate) GetCurrency(date time.Time, nameCur string) (*Curre
 		if err = g.r.InsertCurrencyDate(currencyList); err != nil {
 			logrus.Error(err) //TODO добавить контекст
 		}
-		return &CurrencyDTO{
+		return &usecase.CurrencyDTO{
 			StartDate: response.Date,
 			EndDate:   response.PreviousDate,
 			Name:      response.Valute[nameCur].Name,
@@ -53,7 +54,7 @@ func (g GetCurrencyWithDate) GetCurrency(date time.Time, nameCur string) (*Curre
 		}, nil
 	}
 
-	return &CurrencyDTO{
+	return &usecase.CurrencyDTO{
 		StartDate: currency.StartDate,
 		EndDate:   currency.EndDate,
 		Name:      currency.Name,

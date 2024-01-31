@@ -23,8 +23,6 @@ func NewConnectDB(cfg config.DB) *sql.DB {
 func ConnectPG(c *config.DB) (*sql.DB, error) {
 	db, err := sql.Open("pgx", fmt.Sprintf("postgres://%v:%v@%v:%v/%v?sslmode=disable",
 		c.Username, c.Password, c.Host, c.Port, c.DBName))
-	//db, err := sql.Open("pgx", fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s",
-	//	c.Host, c.Port, c.Username, c.DBName, c.Password))
 	if err != nil {
 		return nil, err
 	}

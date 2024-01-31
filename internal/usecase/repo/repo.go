@@ -36,7 +36,6 @@ func (c CurrencyDB) GetCurrencyDate(date string, charName string) (*usecase.Curr
 func (c CurrencyDB) InsertCurrencyDate(value []usecase.CurrencyDTO) error {
 	var itemId int
 	tx, err := c.db.Begin()
-	//tx.Prepare() TODO
 	if err != nil {
 		return err
 	}
@@ -56,6 +55,5 @@ func (c CurrencyDB) InsertCurrencyDate(value []usecase.CurrencyDTO) error {
 			return tx.Rollback()
 		}
 	}
-
 	return tx.Commit()
 }
