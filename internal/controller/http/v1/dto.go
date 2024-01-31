@@ -10,7 +10,7 @@ type errorResponse struct {
 	Message string `json:"message"`
 }
 
-type ResponseAnswer struct {
+type SuccessResponse struct {
 	StartDate time.Time `json:"start_date"`
 	EndDate   time.Time `json:"end_date"`
 	Name      string    `json:"name"`

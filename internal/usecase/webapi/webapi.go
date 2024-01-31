@@ -1,6 +1,7 @@
 package webapi
 
 import (
+	"currency-rate/internal/usecase"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -16,19 +17,17 @@ func NewWeb(addr string) *WebServer {
 	}
 }
 
-func (this *WebServer) GetQuotes(date string) (*AllCur, error) {
-	var str string
-	str = fmt.Sprintf("%s/archive/%s/daily_json.js", this.Addr, date)
-	a, err := http.Get(str)
+func (this *WebServer) GetQuotes(date string) (*usecase.AllCur, error) {
+	str := fmt.Sprintf("%s/archive/%s/daily_json.js", this.Addr, date)
+	response, err := http.Get(str)
 	if err != nil {
 		return nil, err
 	}
 
-	structResponse := new(AllCur)
-	decoder := json.NewDecoder(a.Body)
+	structResponse := new(usecase.AllCur)
+	decoder := json.NewDecoder(response.Body)
 	decoder.UseNumber()
-	err = decoder.Decode(structResponse)
-	if err != nil {
+	if err = decoder.Decode(structResponse); err != nil {
 		return nil, err
 	}
 	return structResponse, err

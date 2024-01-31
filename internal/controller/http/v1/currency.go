@@ -17,7 +17,6 @@ func NewCurrencyController(getter usecase.CurrencyUseCase) *CurrencyController {
 }
 
 func (c CurrencyController) GetCur(ctx *gin.Context) {
-
 	dateNew, err := time.Parse(constant.CustomTimeLayout, ctx.Query("date"))
 	if err != nil {
 		dateNew = time.Now()
@@ -31,7 +30,7 @@ func (c CurrencyController) GetCur(ctx *gin.Context) {
 		return
 	}
 
-	resp := &ResponseAnswer{
+	resp := &SuccessResponse{
 		StartDate: currency.StartDate,
 		EndDate:   currency.EndDate,
 		Name:      currency.Name,

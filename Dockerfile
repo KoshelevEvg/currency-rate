@@ -4,13 +4,12 @@ WORKDIR /usr/local/src
 
 RUN apk --no-cache add bash git make gcc gettext musl-dev
 
-COPY go.mod go.sum ./
-RUN go mod download
 
 
 # build
 COPY . ./
-RUN go build -o ./bin/currency-rate cmd/currency-rate/main.go
+RUN go mod download
+RUN go build -o ./bin/currency-rate ./cmd/currency-rate/main.go
 
 
 FROM alpine AS runner

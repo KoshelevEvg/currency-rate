@@ -7,13 +7,11 @@ import (
 	"currency-rate/internal/usecase/repo"
 	"currency-rate/internal/usecase/webapi"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"time"
 )
 
-func Run(cfg *config.Config) {
-
+func Run(cfg *config.Config) error {
 	db := NewConnectDB(cfg.DB)
 	router := gin.New()
 	api := webapi.NewWeb(cfg.Address)
@@ -28,5 +26,5 @@ func Run(cfg *config.Config) {
 		ReadTimeout:    10 * time.Second,
 		WriteTimeout:   10 * time.Second,
 	}
-	log.Fatal(srv.ListenAndServe())
+	return srv.ListenAndServe()
 }

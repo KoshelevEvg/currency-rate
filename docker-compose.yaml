@@ -1,14 +1,25 @@
 version:  "3.9"
 
 services:
+  currency-rate:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres-dev
+    environment:
+      - POSTGRES_PASSWORD=root
+
   postgres-dev:
     container_name: postgres-dev
     image: postgres:13.3
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_USER: root
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
+    volumes:
+      - ./db/:/docker-entrypoint-initdb.d
     deploy:
       resources:
         limits:

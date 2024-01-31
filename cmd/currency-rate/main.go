@@ -10,20 +10,22 @@ import (
 	yamlcfg "gopkg.in/yaml.v3"
 )
 
-const configPath = "./config/config.yaml"
+const configPath = "config/config.yaml"
 
 func main() {
 
 	l := logrus.New()
 	l.SetFormatter(&logrus.JSONFormatter{})
 
-	config := new(config.Config)
+	cfg := new(config.Config)
 	file, err := os.ReadFile(configPath)
 	if err != nil {
 		l.Error(err)
 	}
 
-	yamlcfg.Unmarshal(file, &config)
+	if err = yamlcfg.Unmarshal(file, &cfg); err != nil {
+		l.Fatal(err)
+	}
 
-	app.Run(config)
+	l.Fatal(app.Run(cfg))
 }

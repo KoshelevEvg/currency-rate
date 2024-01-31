@@ -1,4 +1,4 @@
-package webapi
+package usecase
 
 import "time"
 
@@ -18,4 +18,12 @@ type AllCur struct {
 	PreviousURL  string    `json:"PreviousURL"`
 	Timestamp    time.Time `json:"Timestamp"`
 	Valute       map[string]Valute
+}
+
+type CurrencyDTO struct {
+	StartDate time.Time `json:"startDate"`
+	EndDate   time.Time `json:"endDate"`
+	Name      string    `json:"name"`
+	CharCode  string    `json:"char_code"`
+	Value     float64   `json:"value"`
 }
