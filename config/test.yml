@@ -1,0 +1,8 @@
+address: "https://www.cbr-xml-daily.ru"
+serverAddress: ":8080"
+database:
+  host: "postgres-dev"
+  port:  "5432"
+  username: "postgres"
+  password: "root"
+  db_name: "postgres"
